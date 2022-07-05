@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\AdminRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -23,6 +25,14 @@ class Admin implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: 'string')]
     private $password;
+
+    #[ORM\OneToMany(mappedBy: 'admin_transaction_id', targetEntity: Transactions::class, orphanRemoval: true)]
+    private $transactions_admin;
+
+    public function __construct()
+    {
+        $this->transactions_admin = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -92,5 +102,39 @@ class Admin implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+    public function __toString(): string
+    {
+       return $this->username;
+    }
+
+    /**
+     * @return Collection<int, Transactions>
+     */
+    public function getTransactionsAdmin(): Collection
+    {
+        return $this->transactions_admin;
+    }
+
+    public function addTransactionsAdmin(Transactions $transactionsAdmin): self
+    {
+        if (!$this->transactions_admin->contains($transactionsAdmin)) {
+            $this->transactions_admin[] = $transactionsAdmin;
+            $transactionsAdmin->setAdminTransactionId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTransactionsAdmin(Transactions $transactionsAdmin): self
+    {
+        if ($this->transactions_admin->removeElement($transactionsAdmin)) {
+            // set the owning side to null (unless already changed)
+            if ($transactionsAdmin->getAdminTransactionId() === $this) {
+                $transactionsAdmin->setAdminTransactionId(null);
+            }
+        }
+
+        return $this;
     }
 }

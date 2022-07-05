@@ -30,24 +30,19 @@ class AdminAuthentificationAuthenticator extends AbstractLoginFormAuthenticator
 
     public function authenticate(Request $request): Passport
     {
-        $username = $request->request->get('username', '');
+        $username = $request->request->get('_username', '');
 
         $request->getSession()->set(Security::LAST_USERNAME, $username);
-
+        var_dump($request->request->get('_password', ''));
         return new Passport(
             new UserBadge($username),
             new PasswordCredentials($request->request->get('password', '')),
-            [
-                new CsrfTokenBadge('authenticate', $request->request->get('_csrf_token')),
-            ]
+
         );
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
-        if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
-            return new RedirectResponse($targetPath);
-        }
         return new RedirectResponse($this->urlGenerator->generate('admin'));
     }
 
