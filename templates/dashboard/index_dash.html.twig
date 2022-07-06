@@ -15,7 +15,15 @@
 
 {% block page_content %}
     {% deprecated 'The "page_content" block is deprecated, use "main" instead.' %}
-    {{ render_chart(chart) }}
 {% endblock %}
 
-{% block main %}{{ block('page_content') }}{% endblock %}
+{% block main %}
+    {{ render_chart(chart) }}
+    <div class="example-wrapper">
+
+        {{ render_chart(chart) }}
+
+    </div>
+    {{ render_chart(chart, {'class': 'my-chart'}) }}
+
+{% endblock %}
