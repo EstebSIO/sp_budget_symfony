@@ -5,10 +5,15 @@ namespace App\Controller\Admin;
 use App\Entity\MoyensPaiement;
 use App\Entity\Transactions;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Query\FilterCollection;
+use Doctrine\ORM\QueryBuilder;
+use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
@@ -20,6 +25,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\SlugField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
+use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use Symfony\Bridge\Doctrine\ManagerRegistry;
 
 class TransactionsCrudController extends AbstractCrudController
@@ -68,7 +74,9 @@ class TransactionsCrudController extends AbstractCrudController
         $entityManager->flush();
 
     }
-
+        public function createIndexQueryBuilder(SearchDto $searchDto,EntityDto $entityDto,FieldCollection $fieldCollection, FilterCollection|\EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection $filters):QueryBuilder{
+    return parent::createIndexQueryBuilder($searchDto,$entityDto,$fieldCollection,$filters);
+    }
     public function configureFields(string $pageName): iterable
     {
         return [

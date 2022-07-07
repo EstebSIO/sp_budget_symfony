@@ -29,6 +29,9 @@ class Admin implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'admin_transaction_id', targetEntity: Transactions::class, orphanRemoval: true)]
     private $transactions_admin;
 
+    #[ORM\ManyToOne(targetEntity: Roles::class, inversedBy: 'list_admin')]
+    private $role;
+
     public function __construct()
     {
         $this->transactions_admin = new ArrayCollection();
@@ -134,6 +137,18 @@ class Admin implements UserInterface, PasswordAuthenticatedUserInterface
                 $transactionsAdmin->setAdminTransactionId(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getRole(): ?Roles
+    {
+        return $this->role;
+    }
+
+    public function setRole(?Roles $role): self
+    {
+        $this->role = $role;
 
         return $this;
     }
